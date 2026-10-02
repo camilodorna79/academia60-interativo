@@ -388,14 +388,19 @@ footer .termo{
   color:#fdba74;font-weight:700;font-size:.9rem;white-space:nowrap;
   max-width:130px;overflow:hidden;text-overflow:ellipsis;
 }
-.barra-inferior nav{display:flex;gap:.3rem;overflow-x:auto;flex:1;scrollbar-width:none}
+.barra-inferior nav{display:flex;gap:.4rem;overflow-x:auto;flex:1;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#f97316 transparent;padding:.15rem 0}
+.barra-inferior nav::-webkit-scrollbar{height:3px}
+.barra-inferior nav::-webkit-scrollbar-thumb{background:#f97316;border-radius:3px}
 .barra-inferior nav::-webkit-scrollbar{display:none}
 .barra-inferior nav a{
-  color:#e4e4e7;text-decoration:none;font-size:.82rem;font-weight:600;
-  padding:.5rem .8rem;border-radius:8px;white-space:nowrap;min-height:44px;
+  color:#e4e4e7;text-decoration:none;font-size:.8rem;font-weight:600;
+  padding:.45rem .75rem;border-radius:999px;white-space:nowrap;min-height:44px;
   display:inline-flex;align-items:center;transition:background .15s;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  flex:0 0 auto;
 }
 .barra-inferior nav a:hover{background:rgba(255,255,255,.12);color:#fdba74}
+.barra-inferior nav a:active{background:rgba(249,115,22,.35)}
 
 /* ============ MODAL ============ */
 .modal-fundo{
@@ -553,7 +558,7 @@ footer .termo{
     <label class="aceite-dados"><input type="checkbox" id="aceiteDados"> Autorizo salvar meu nome/apelido, frequência, reservas e comentários neste aparelho. Seus dados ficam salvos com segurança e sincronizam entre os aparelhos da turma.</label>
     <button id="btnContinuar" style="display:none;background:#16a34a;color:#fff;font-weight:700"></button>
     <button id="btnEntrar">Entrar e salvar localmente</button><button id="btnEntrarVisitante" type="button" style="width:100%;margin-top:.5rem;background:#f4f4f5;color:#3f3f46;font-weight:600">👤 Entrar como Visitante</button>
-    <button id="btnEntrarSemDados" type="button" style="width:100%;margin-top:.55rem;padding:.85rem;border:1px solid var(--borda);border-radius:10px;color:var(--grafite);font-weight:700;min-height:48px">Entrar sem enviar dados pessoais</button>
+    
   </div>
 </div>
 
@@ -3406,7 +3411,7 @@ async function entrar(){
   iniciarPosLogin();
 }
 $('#btnEntrar').addEventListener('click', entrar);
-$('#btnEntrarSemDados').addEventListener('click',function(){var nome=$('#inputNome').value.trim();if(!nome){$('#erroNome').style.display='block';return;}dataConsent=false;usuario=nome;store(':usuario',null);store(':consentimento',false);$('#telaAcesso').style.display='none';$('#nomeUsuario').textContent=nome;$('#comNome').value=nome;iniciarPosLogin();toast('Modo leitura: nenhum dado pessoal será enviado.');});
+
 $('#btnEntrarVisitante').addEventListener('click',function(){dataConsent=true;usuario='Visitante';store(':usuario','Visitante');store(':consentimento',true);$('#telaAcesso').style.display='none';$('#nomeUsuario').textContent='Visitante';$('#comNome').value='Visitante';iniciarPosLogin();toast('Você está navegando como Visitante. 👋');});
 $('#inputNome').addEventListener('keydown', function(e){ if(e.key === 'Enter') entrar(); });
 
@@ -3725,7 +3730,7 @@ function iniciarPosLogin(){
       iniciarPosLogin();toast('Bem-vindo de volta, '+prev+'! 👋');
     });
   }
-  $('#inputNome').value=prev||'';$('#aceiteDados').checked=!!consent;dataConsent=false;
+  $('#inputNome').value='';$('#aceiteDados').checked=false;dataConsent=false;
   $('#telaAcesso').style.display='flex';
   var bs=document.getElementById('btnSair');
   if(bs)bs.addEventListener('click',function(){abrirModal('Sair da conta','Sair e voltar à tela de acesso? Seus dados salvos neste aparelho continuam aqui.',function(){store(':usuario',null);store(':consentimento',false);location.reload();});});
