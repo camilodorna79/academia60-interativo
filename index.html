@@ -522,7 +522,7 @@ footer .termo{
     <p>Para acessar, digite seu nome ou apelido</p>
     <input type="text" id="inputNome" placeholder="Seu nome ou apelido" maxlength="40" autocomplete="off">
     <div class="erro" id="erroNome">Digite seu nome ou apelido para entrar</div>
-    <label class="aceite-dados"><input type="checkbox" id="aceiteDados"> Autorizo salvar meu nome/apelido, frequência, reservas e comentários neste aparelho. Nesta versão, a sincronização entre celulares está desativada; os dados não saem deste dispositivo.</label>
+    <label class="aceite-dados"><input type="checkbox" id="aceiteDados"> Autorizo salvar meu nome/apelido, frequência, reservas e comentários neste aparelho. Seus dados ficam salvos com segurança e sincronizam entre os aparelhos da turma.</label>
     <button id="btnEntrar">Entrar e salvar localmente</button><button id="btnEntrarSemDados" type="button" style="width:100%;margin-top:.55rem;padding:.85rem;border:1px solid var(--borda);border-radius:10px;color:var(--grafite);font-weight:700;min-height:48px">Entrar sem enviar dados pessoais</button>
   </div>
 </div>
@@ -893,7 +893,7 @@ footer .termo{
 
 <!-- BARRA INFERIOR -->
 <div class="barra-inferior">
-  <span class="usuario" id="nomeUsuario">Visitante</span>
+  <button id="btnSair" title="Sair da conta" style="background:none;border:none;color:#fdba74;font-size:1.05rem;cursor:pointer;padding:.3rem .5rem" aria-label="Sair">⎋</button><span class="usuario" id="nomeUsuario">Visitante</span>
   <nav>
     <a href="#inicio">Início</a>
     <a href="#sobre">Sobre</a>
