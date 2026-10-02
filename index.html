@@ -513,7 +513,8 @@ footer .termo{
 
 /* ===== Ampliação tela de acesso (v3 — pedido Camilo) ===== */
 #telaAcesso .card-acesso{max-width:560px;padding:1.6rem 1.4rem}
-#telaAcesso img{width:min(230px,58vw)!important;height:auto!important}
+#telaAcesso .logo-acesso{width:min(240px,62vw)!important;max-height:none!important}
+#telaAcesso .logo-acesso img{width:100%!important;height:auto!important;max-height:200px!important}
 #telaAcesso h1{font-size:clamp(1.7rem,6.5vw,2.3rem)!important;line-height:1.15!important}
 #telaAcesso p{font-size:1.08rem!important;line-height:1.45!important}
 #telaAcesso #inputNome{font-size:1.2rem!important;padding:.85rem 1rem!important;min-height:58px!important}
@@ -533,6 +534,7 @@ footer .termo{
     <input type="text" id="inputNome" placeholder="Seu nome ou apelido" maxlength="40" autocomplete="off">
     <div class="erro" id="erroNome">Digite seu nome ou apelido para entrar</div>
     <label class="aceite-dados"><input type="checkbox" id="aceiteDados"> Autorizo salvar meu nome/apelido, frequência, reservas e comentários neste aparelho. Seus dados ficam salvos com segurança e sincronizam entre os aparelhos da turma.</label>
+    <button id="btnContinuar" style="display:none;background:#16a34a;color:#fff;font-weight:700"></button>
     <button id="btnEntrar">Entrar e salvar localmente</button><button id="btnEntrarSemDados" type="button" style="width:100%;margin-top:.55rem;padding:.85rem;border:1px solid var(--borda);border-radius:10px;color:var(--grafite);font-weight:700;min-height:48px">Entrar sem enviar dados pessoais</button>
   </div>
 </div>
@@ -3327,7 +3329,7 @@ async function renderRemoteSummary(){
   if(list){var keys=Object.keys(c);list.innerHTML=keys.length?keys.map(function(k){var x=c[k];return '<div class="toggle-linha"><div><strong>'+escapeHtml(x.nome||'Estudante')+'</strong><br><span style="font-size:.85rem;color:var(--cinza)">'+Number(x.visitas||0)+' visitas · '+fmtTempo(Number(x.tempoSeg||0))+' de interações</span></div></div>'}).join(''):'Nenhum colega autorizou compartilhar métricas.';}
   var comments=root.comentarios||{},box=$('#listaComentarios');if(box){var arr=Object.keys(comments).map(function(k){return Object.assign({key:k},comments[k])}).sort(function(a,b){return (b.ts||0)-(a.ts||0)});box.classList.toggle('comments-scroll',arr.length>6);box.setAttribute('aria-label',arr.length>6?'Comentários da turma; lista rolável':'Comentários da turma');box.innerHTML=arr.length?arr.map(function(c){var own=c.userKey===participantKey();return '<div class="comentario-item"><span class="autor">'+escapeHtml(c.nome||'Estudante')+'</span> <span class="data">· '+escapeHtml(c.data||'')+'</span>'+(own?'<button class="btn-excluir-com" data-key="'+c.id+'">🗑️ Apagar</button>':'')+'<div class="texto">'+escapeHtml(c.texto||'')+'</div></div>'}).join(''):'<p style="text-align:center;color:var(--cinza);font-size:.92rem">Nenhum comentário ainda — seja a primeira pessoa a deixar sua opinião!</p>';box.classList.toggle('comentarios-rolaveis',arr.length>6);box.tabIndex=arr.length>6?0:-1;box.setAttribute('role','region');box.setAttribute('aria-label',arr.length>6?'Comentários da turma; área rolável com todos os comentários':'Comentários da turma');box.querySelectorAll('.btn-excluir-com').forEach(function(b){b.addEventListener('click',function(){var key=b.dataset.key;abrirModal('Apagar comentário','Apagar seu comentário? Esta ação não pode ser desfeita.',async function(){await fbRequest('comentarios/'+key,'DELETE');await loadRemote();toast('Comentário apagado.');});});});}
   var reservations=root.reservas||{};reservas=reservations;renderConfirmados();
-  var f=(root.frequencia&&root.frequencia[participantKey()])||{};renderFrequencyFromRemote(f);
+  var f=root.frequencia||{};renderFrequencyFromRemote(f);
   var personal=(root.usuarios&&root.usuarios[participantKey()])||{};var pv=$('#mpVisitas'),pt=$('#mpTempo'),pf=$('#mpPresencas');if(pv)pv.textContent=Number(personal.visitas||0)+' visitas suas';if(pt)pt.textContent=fmtTempo(Number(personal.tempoSeg||0))+' seus';var mine=(root.frequencia&&root.frequencia[participantKey()])||{};if(pf)pf.textContent=Object.keys(mine).length+' presenças registradas';
 }
 function escapeHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -3650,8 +3652,22 @@ function iniciarPosLogin(){
 
 /* ---------- boot ---------- */
 (function boot(){
-  var prev=store(':usuario');$('#inputNome').value=prev||'';$('#aceiteDados').checked=false;dataConsent=false;
-  $('#telaAcesso').style.display='flex';iniciarRail();
+  var prev=store(':usuario');var consent=store(':consentimento');
+  iniciarRail();
+  var btnCont=document.getElementById('btnContinuar');
+  if(prev&&consent&&btnCont){
+    btnCont.style.display='block';
+    btnCont.textContent='▶ Continuar como '+prev;
+    btnCont.addEventListener('click',function(){
+      usuario=prev;dataConsent=true;
+      $('#telaAcesso').style.display='none';$('#nomeUsuario').textContent=prev;$('#comNome').value=prev;
+      iniciarPosLogin();toast('Bem-vindo de volta, '+prev+'! 👋');
+    });
+  }
+  $('#inputNome').value=prev||'';$('#aceiteDados').checked=!!consent;dataConsent=false;
+  $('#telaAcesso').style.display='flex';
+  var bs=document.getElementById('btnSair');
+  if(bs)bs.addEventListener('click',function(){abrirModal('Sair da conta','Sair e voltar à tela de acesso? Seus dados salvos neste aparelho continuam aqui.',function(){store(':usuario',null);store(':consentimento',false);location.reload();});});
 })();
 })();
 </script>
