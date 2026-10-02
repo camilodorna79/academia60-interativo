@@ -510,6 +510,16 @@ footer .termo{
 #telaAcesso button{min-height:36px;padding:.35rem .5rem;font-size:.79rem;margin-top:.24rem}
 #telaAcesso .aceite-dados{font-size:.55rem!important;line-height:1.12!important;padding:.28rem!important;margin:.2rem 0 .04rem!important}
 @media(max-height:650px){#telaAcesso{align-items:flex-start}#telaAcesso .card-acesso{margin:auto;padding:4px 9px}#telaAcesso .logo-acesso .logo-original{height:34px!important;width:64px!important}#telaAcesso h1{font-size:.88rem}#telaAcesso p{font-size:.68rem;margin-bottom:.12rem}#telaAcesso button{min-height:30px;padding:.26rem;font-size:.72rem;margin-top:.18rem}#telaAcesso .aceite-dados{font-size:.5rem!important;padding:.22rem!important;margin:.13rem 0 .02rem!important}}
+
+/* ===== Ampliação tela de acesso (v3 — pedido Camilo) ===== */
+#telaAcesso .card-acesso{max-width:560px;padding:1.6rem 1.4rem}
+#telaAcesso img{width:min(230px,58vw)!important;height:auto!important}
+#telaAcesso h1{font-size:clamp(1.7rem,6.5vw,2.3rem)!important;line-height:1.15!important}
+#telaAcesso p{font-size:1.08rem!important;line-height:1.45!important}
+#telaAcesso #inputNome{font-size:1.2rem!important;padding:.85rem 1rem!important;min-height:58px!important}
+#telaAcesso button{font-size:1.12rem!important;min-height:58px!important;padding:.85rem 1rem!important}
+#telaAcesso .aceite-dados{font-size:.88rem!important;line-height:1.45!important}
+#telaAcesso .erro{font-size:.9rem!important}
 </style>
 </head>
 <body>
@@ -3273,7 +3283,7 @@ function localSet(path,value,method){
 async function fbRequest(path,method,data){
   if(!SUPABASE_AUTH_PROVIDER_ENABLED||!secureUser){fbOnline=false;if(method==='GET')return localAt(path);return localSet(path,data,method);}
   try{
-    var parts=(path||'').split('/').filter(Boolean),table=parts[0],uid=secureUser.id,r,rows,out,session=(await supabaseClient.auth.getSession()).data.session;
+    var parts=(path||'').split('/').filter(Boolean),table=parts[0],uid=secureUser.id,r,rows,out,session=(await supabaseClient.auth.getSession()).data.session;fbOnline=true;
     if(!session||!session.access_token)throw new Error('Supabase session token missing');
     var q=SUPABASE_URL+'/rest/v1/',headers={apikey:SUPABASE_ANON_KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json',Prefer:'return=representation'};
     if(table==='metricas'){
@@ -3293,8 +3303,8 @@ async function fbRequest(path,method,data){
     }
     if(table==='frequencia'){
       if(method==='GET'){r=await fetch(q+'attendance?user_id=eq.'+encodeURIComponent(uid)+'&select=attended_on',{headers});if(!r.ok)throw new Error('attendance '+r.status);rows=await r.json();out={};rows.forEach(function(x){out[x.attended_on]={feito:true};});return out;}
-      if(method==='PUT'){r=await fetch(q+'attendance?on_conflict=user_id,attended_on',{method:'POST',headers:Object.assign({},headers,{Prefer:'resolution=ignore-duplicates,return=minimal'}),body:JSON.stringify({user_id:uid,attended_on:parts[1]})});if(!r.ok)throw new Error('attendance write '+r.status);return {};}
-      if(method==='DELETE'){r=await fetch(q+'attendance?user_id=eq.'+encodeURIComponent(uid)+'&attended_on=eq.'+encodeURIComponent(parts[1]),{method:'DELETE',headers});return r.ok?{}:null;}
+      if(method==='PUT'){r=await fetch(q+'attendance?on_conflict=user_id,attended_on',{method:'POST',headers:Object.assign({},headers,{Prefer:'resolution=ignore-duplicates,return=minimal'}),body:JSON.stringify({user_id:uid,attended_on:parts[2]})});if(!r.ok)throw new Error('attendance write '+r.status);return {};}
+      if(method==='DELETE'){r=await fetch(q+'attendance?user_id=eq.'+encodeURIComponent(uid)+'&attended_on=eq.'+encodeURIComponent(parts[2]),{method:'DELETE',headers});return r.ok?{}:null;}
     }
     if(table==='allAttendance'&&method==='GET'){r=await fetch(q+'rpc/get_60plus_public_summary',{method:'POST',headers,body:'{}'});if(!r.ok)throw new Error('attendance summary '+r.status);var sm=await r.json();return Number(sm.presencas||0);}
     if(table==='reservas'){
@@ -3307,7 +3317,7 @@ async function fbRequest(path,method,data){
   }catch(e){fbOnline=false;console.error('[secure-db]',e);return null;}
 }
 
-function remoteStatus(){var el=$('#fbStatus');if(el)el.textContent='Modo local: dados salvos somente neste aparelho. A sincronização online será ativada após habilitar autenticação segura no projeto.';}
+function remoteStatus(){var el=$('#fbStatus');if(!el)return;el.textContent=(fbOnline&&secureUser)?'Sincronização online ativa ✅ — dados da turma em tempo real.':'Modo local: dados salvos somente neste aparelho.';}
 function flattenReservations(nested){var flat={};Object.keys(nested||{}).forEach(function(day){Object.keys(nested[day]||{}).forEach(function(hour){flat[day+'|'+hour]=nested[day][hour]||{};});});return flat;}
 async function loadRemote(){var uid=participantKey();var results=await Promise.all([fbRequest('metricas','GET'),fbRequest('compartilhados','GET'),fbRequest('comentarios','GET'),fbRequest('reservas','GET'),fbRequest('frequencia','GET'),fbRequest('usuarios','GET'),fbRequest('allAttendance','GET')]);var raw=results[2]||{},comments={};if(Array.isArray(raw)){raw.forEach(function(c){comments[c.id]={id:c.id,nome:c.display_name||c.nome,userKey:c.user_id||c.userKey,texto:c.body||c.texto,ts:c.created_at?Date.parse(c.created_at):(c.ts||0),data:c.created_at?new Date(c.created_at).toLocaleDateString('pt-BR'):(c.data||'')};});}else{Object.keys(raw).forEach(function(k){var c=raw[k]||{};comments[k]={id:c.id||k,nome:c.display_name||c.nome||'Estudante',userKey:c.user_id||c.userKey,texto:c.body||c.texto||'',ts:c.created_at?Date.parse(c.created_at):(c.ts||0),data:c.created_at?new Date(c.created_at).toLocaleDateString('pt-BR'):(c.data||'')};});}fbRootData={metricas:results[0]||{},compartilhados:results[1]||{},comentarios:comments,reservas:flattenReservations(results[3]||{}),frequencia:results[4]||{},usuarios:results[5]||{},allFrequency:results[6]||results[4]||{}};remoteStatus();renderRemoteSummary();}
 
@@ -3321,9 +3331,9 @@ async function renderRemoteSummary(){
   var personal=(root.usuarios&&root.usuarios[participantKey()])||{};var pv=$('#mpVisitas'),pt=$('#mpTempo'),pf=$('#mpPresencas');if(pv)pv.textContent=Number(personal.visitas||0)+' visitas suas';if(pt)pt.textContent=fmtTempo(Number(personal.tempoSeg||0))+' seus';var mine=(root.frequencia&&root.frequencia[participantKey()])||{};if(pf)pf.textContent=Object.keys(mine).length+' presenças registradas';
 }
 function escapeHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-async function incrementRemoteVisit(){var k=participantKey(),ts=new Date().toISOString(),u=localData.usuarios[k]||{nome:usuario,visitas:0,tempoSeg:0};u.nome=usuario;u.visitas=Number(u.visitas||0)+1;u.ultimoAcesso=ts;localData.usuarios[k]=u;localData.metricas=localData.metricas||{visitas:0,tempoSeg:0};localData.metricas.visitas=Number(localData.metricas.visitas||0)+1;localData.metricas.atualizadoEm=ts;store(':privateLocalData',localData);await loadRemote();}
-async function addRemoteTime(seconds){var k=participantKey(),ts=new Date().toISOString(),u=localData.usuarios[k]||{nome:usuario,visitas:0,tempoSeg:0};u.tempoSeg=Number(u.tempoSeg||0)+seconds;u.nome=usuario;localData.usuarios[k]=u;localData.metricas=localData.metricas||{visitas:0,tempoSeg:0};localData.metricas.tempoSeg=Number(localData.metricas.tempoSeg||0)+seconds;localData.metricas.atualizadoEm=ts;store(':privateLocalData',localData);await loadRemote();}
-async function shareMetrics(enabled){var k=participantKey();if(!enabled){await fbRequest('compartilhados/'+k,'DELETE');store(':sharing:'+k,false);await loadRemote();return;}var u=await fbRequest('usuarios/'+k,'GET')||{nome:usuario,visitas:0,tempoSeg:0};var f=await fbRequest('frequencia/'+k,'GET')||{};await fbRequest('compartilhados/'+k,'PUT',{nome:usuario,visitas:Number(u.visitas||0),tempoSeg:Number(u.tempoSeg||0),presencas:Object.keys(f).length,consentAt:new Date().toISOString()});store(':sharing:'+k,true);await loadRemote();}
+async function incrementRemoteVisit(){var k=participantKey(),ts=new Date().toISOString(),u=localData.usuarios[k]||{nome:usuario,visitas:0,tempoSeg:0};u.nome=usuario;u.visitas=Number(u.visitas||0)+1;u.ultimoAcesso=ts;localData.usuarios[k]=u;localData.metricas=localData.metricas||{visitas:0,tempoSeg:0};localData.metricas.visitas=Number(localData.metricas.visitas||0)+1;localData.metricas.atualizadoEm=ts;store(':privateLocalData',localData);if(secureUser){try{await fbRequest('metricas','PATCH',{visitas:1,tempoSeg:0});}catch(e){}}await loadRemote();}
+async function addRemoteTime(seconds){var k=participantKey(),ts=new Date().toISOString(),u=localData.usuarios[k]||{nome:usuario,visitas:0,tempoSeg:0};u.tempoSeg=Number(u.tempoSeg||0)+seconds;u.nome=usuario;localData.usuarios[k]=u;localData.metricas=localData.metricas||{visitas:0,tempoSeg:0};localData.metricas.tempoSeg=Number(localData.metricas.tempoSeg||0)+seconds;localData.metricas.atualizadoEm=ts;store(':privateLocalData',localData);if(secureUser){try{await fbRequest('metricas','PATCH',{visitas:0,tempoSeg:seconds});}catch(e){}}await loadRemote();}
+async function shareMetrics(enabled){var k=participantKey();if(!enabled){await fbRequest('compartilhados/'+k,'PATCH',{share_metrics:false});store(':sharing:'+k,false);await loadRemote();return;}var u=await fbRequest('usuarios/'+k,'GET')||{nome:usuario,visitas:0,tempoSeg:0};var f=await fbRequest('frequencia/'+k,'GET')||{};await fbRequest('compartilhados/'+k,'PUT',{nome:usuario,visitas:Number(u.visitas||0),tempoSeg:Number(u.tempoSeg||0),share_metrics:true});store(':sharing:'+k,true);await loadRemote();}
 function remoteRealtime(){loadRemote();setInterval(loadRemote,15000);}
 function hojeStr(){ var d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function fmtTempo(seg){
@@ -3388,7 +3398,7 @@ function iniciarMetricasPessoais(){if(window['_init_iniciarMetricasPessoais'])re
 function iniciarCompartilhamento(){if(window['_init_iniciarCompartilhamento'])return;window['_init_iniciarCompartilhamento']=true;
   var toggle=$('#toggleCompartilhar');
   fbRequest('compartilhados/'+participantKey(),'GET').then(function(v){toggle.checked=!!v;$('#listaCompartilhada').style.display='block';loadRemote();});
-  toggle.addEventListener('change',function(){var intended=toggle.checked;toggle.disabled=true;if(intended){abrirModal('Compartilhar métricas neste aparelho','As métricas ficam salvas localmente neste dispositivo; ainda não serão compartilhadas online entre a turma. Deseja continuar?',async function(){await shareMetrics(true);toggle.disabled=false;toggle.checked=true;toast('Métricas compartilhadas.');});}else{abrirModal('Parar compartilhamento','Seu registro será removido da lista pública. Deseja continuar?',async function(){await shareMetrics(false);toggle.disabled=false;toggle.checked=false;toast('Compartilhamento desativado.');});}setTimeout(function(){if($('#modalFundo').classList.contains('ativo'))return;toggle.disabled=false;toggle.checked=!intended;},0);});
+  toggle.addEventListener('change',function(){var intended=toggle.checked;toggle.disabled=true;if(intended){abrirModal('Compartilhar métricas neste aparelho','Suas métricas (visitas, tempo e presenças) aparecerão na lista da turma, em todos os aparelhos. Deseja continuar?',async function(){await shareMetrics(true);toggle.disabled=false;toggle.checked=true;toast('Métricas compartilhadas.');});}else{abrirModal('Parar compartilhamento','Seu registro será removido da lista pública. Deseja continuar?',async function(){await shareMetrics(false);toggle.disabled=false;toggle.checked=false;toast('Compartilhamento desativado.');});}setTimeout(function(){if($('#modalFundo').classList.contains('ativo'))return;toggle.disabled=false;toggle.checked=!intended;},0);});
   $('#modalCancelar').addEventListener('click',function(){toggle.disabled=false;toggle.checked=!!store(':sharing:'+participantKey());});
 }
 
@@ -3616,13 +3626,27 @@ function iniciarRail(){
 
 /* ---------- pós-login ---------- */
 var secureFeaturesStarted=false;
-function iniciarDataFeaturesOnce(){if(secureFeaturesStarted)return;secureFeaturesStarted=true;USE_SECURE_BACKEND=true;iniciarMetricas();iniciarMetricasPessoais();iniciarCompartilhamento();iniciarTransporte();iniciarFrequencia();iniciarComentarios();remoteRealtime();}
+function iniciarDataFeaturesOnce(){if(window['_init_dataFeatures'])return;window['_init_dataFeatures']=true;USE_SECURE_BACKEND=!!secureUser;iniciarMetricas();iniciarMetricasPessoais();iniciarCompartilhamento();iniciarTransporte();iniciarFrequencia();iniciarComentarios();if(USE_SECURE_BACKEND){remoteRealtime();}else{loadRemote();$('#fbStatus').textContent='Salvo somente neste aparelho (sem conexão segura agora).';}}
+ function atualizarParaOnline(){USE_SECURE_BACKEND=true;fbOnline=true;loadRemote();remoteRealtime();}
+
 function iniciarPosLogin(){
-  if(SUPABASE_AUTH_PROVIDER_ENABLED&&dataConsent){supabaseClient.auth.getSession().then(async function(o){var session=o.data.session;if(!session){var result=await supabaseClient.auth.signInAnonymously();session=result.data.session;}secureUser=session?session.user:null;if(secureUser){participantKey();iniciarDataFeaturesOnce();}}).catch(function(e){console.error(e);toast('Não foi possível criar sessão segura.');});}
   iniciarOrganograma();iniciarCompartilharPagina();iniciarReveal();
-  if(dataConsent){iniciarMetricas();iniciarMetricasPessoais();iniciarCompartilhamento();iniciarTransporte();iniciarFrequencia();iniciarComentarios();if(USE_SECURE_BACKEND)remoteRealtime();else{loadRemote();$('#fbStatus').textContent='Salvo somente neste aparelho. Para sincronizar com a turma, ative o provedor Anonymous Sign-Ins no Supabase e a configuração segura.';}}
-  else{remoteStatus();document.querySelectorAll('#btnPresencaHoje,#btnReservar,#btnCancelarReserva,#btnEnviarComentario,#toggleCompartilhar').forEach(function(el){el.disabled=true;});$('#fbStatus').textContent='Modo leitura: nenhum dado pessoal é enviado.';$('#comTexto').disabled=true;$('#comNome').value=usuario;}
-}
+  if(dataConsent){
+    var fallbackLocal=function(){if(!window['_init_dataFeatures']){secureUser=null;iniciarDataFeaturesOnce();}};
+    if(SUPABASE_AUTH_PROVIDER_ENABLED){
+      supabaseClient.auth.getSession().then(async function(o){
+        var session=o.data.session;
+        if(!session){var result=await supabaseClient.auth.signInAnonymously();session=result.data&&result.data.session;}
+        secureUser=session?session.user:null;
+        if(!window['_init_dataFeatures']){iniciarDataFeaturesOnce();}else{atualizarParaOnline();}
+      }).catch(function(e){console.error(e);fallbackLocal();});
+      setTimeout(fallbackLocal,8000);
+    }else{fallbackLocal();}
+  }else{
+    remoteStatus();document.querySelectorAll('#btnPresencaHoje,#btnReservar,#btnCancelarReserva,#btnEnviarComentario,#toggleCompartilhar').forEach(function(el){el.disabled=true;});$('#fbStatus').textContent='Modo leitura: nenhum dado pessoal é enviado.';$('#comTexto').disabled=true;$('#comNome').value=usuario;
+  }
+ }
+
 
 /* ---------- boot ---------- */
 (function boot(){
