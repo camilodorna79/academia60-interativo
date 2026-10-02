@@ -16,7 +16,11 @@
   --sombra-hover:0 6px 20px rgba(249,115,22,.18);
   --raio:14px;
 }
-html{scroll-behavior:smooth;scroll-padding-top:84px}
+html{scroll-behavior:smooth;scroll-padding-top:84px;overflow-x:hidden}
+body{overflow-x:hidden;max-width:100vw}
+img,svg,video,canvas{max-width:100%}
+*{min-width:0}
+#organogramaWrap,#freqGrid,.freq-grid,.tabela-scroll{max-width:100%;overflow-x:auto}
 section,[id]{scroll-margin-top:82px}
 body{
   font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
@@ -513,8 +517,8 @@ footer .termo{
 
 /* ===== Ampliação tela de acesso (v3 — pedido Camilo) ===== */
 #telaAcesso .card-acesso{max-width:560px;padding:1.6rem 1.4rem}
-#telaAcesso .logo-acesso{width:min(240px,62vw)!important;max-height:none!important}
-#telaAcesso .logo-acesso img{width:100%!important;height:auto!important;max-height:200px!important}
+#telaAcesso .logo-acesso{width:min(560px,88vw)!important;max-height:none!important}
+#telaAcesso .logo-acesso img{width:100%!important;height:auto!important;max-height:none!important}
 #telaAcesso h1{font-size:clamp(1.7rem,6.5vw,2.3rem)!important;line-height:1.15!important}
 #telaAcesso p{font-size:1.08rem!important;line-height:1.45!important}
 #telaAcesso #inputNome{font-size:1.2rem!important;padding:.85rem 1rem!important;min-height:58px!important}
@@ -3320,7 +3324,7 @@ async function fbRequest(path,method,data){
 }
 
 function remoteStatus(){var el=$('#fbStatus');if(!el)return;el.textContent=(fbOnline&&secureUser)?'Sincronização online ativa ✅ — dados da turma em tempo real.':'Modo local: dados salvos somente neste aparelho.';}
-function flattenReservations(nested){var flat={};Object.keys(nested||{}).forEach(function(day){Object.keys(nested[day]||{}).forEach(function(hour){flat[day+'|'+hour]=nested[day][hour]||{};});});return flat;}
+function flattenReservations(nested){var flat={};Object.keys(nested||{}).forEach(function(day){var v=nested[day]||{};if(typeof v==='object'&&!Array.isArray(v)&&Object.keys(v).length&&typeof Object.keys(v)[0]==='string'&&/\d{2}:\d{2}/.test(day)){flat[day]=v;}else{Object.keys(v).forEach(function(hour){flat[day+'|'+hour]=v[hour]||{};});}});return flat;}
 async function loadRemote(){var uid=participantKey();var results=await Promise.all([fbRequest('metricas','GET'),fbRequest('compartilhados','GET'),fbRequest('comentarios','GET'),fbRequest('reservas','GET'),fbRequest('frequencia','GET'),fbRequest('usuarios','GET'),fbRequest('allAttendance','GET')]);var raw=results[2]||{},comments={};if(Array.isArray(raw)){raw.forEach(function(c){comments[c.id]={id:c.id,nome:c.display_name||c.nome,userKey:c.user_id||c.userKey,texto:c.body||c.texto,ts:c.created_at?Date.parse(c.created_at):(c.ts||0),data:c.created_at?new Date(c.created_at).toLocaleDateString('pt-BR'):(c.data||'')};});}else{Object.keys(raw).forEach(function(k){var c=raw[k]||{};comments[k]={id:c.id||k,nome:c.display_name||c.nome||'Estudante',userKey:c.user_id||c.userKey,texto:c.body||c.texto||'',ts:c.created_at?Date.parse(c.created_at):(c.ts||0),data:c.created_at?new Date(c.created_at).toLocaleDateString('pt-BR'):(c.data||'')};});}fbRootData={metricas:results[0]||{},compartilhados:results[1]||{},comentarios:comments,reservas:flattenReservations(results[3]||{}),frequencia:results[4]||{},usuarios:results[5]||{},allFrequency:results[6]||results[4]||{}};remoteStatus();renderRemoteSummary();}
 
 async function renderRemoteSummary(){
