@@ -449,12 +449,13 @@ footer .termo{
 #telaAcesso .card-acesso{padding:clamp(10px,2.2vh,20px) clamp(14px,4vw,24px);max-height:calc(100dvh - 16px);overflow-y:auto;}
 
 
-#telaAcesso h1{font-size:clamp(1.08rem,4.1vw,1.42rem);line-height:1.2;margin-bottom:.15rem}
-#telaAcesso p{font-size:.88rem;margin-bottom:.4rem}
-#telaAcesso #inputNome{padding:.6rem .8rem;font-size:1rem}
-#telaAcesso button{min-height:44px;padding:.65rem .8rem;margin-top:.45rem;font-size:.95rem}
-#telaAcesso .aceite-dados{font-size:.68rem;line-height:1.25;padding:.42rem;margin-top:.42rem}
-#telaAcesso .erro{font-size:.75rem;margin-top:.25rem}
+#telaAcesso h1{font-size:clamp(1.6rem,6.2vw,2.3rem);line-height:1.2;margin-bottom:.35rem}
+#telaAcesso p{font-size:1.05rem;margin-bottom:.6rem}
+#telaAcesso #inputNome{padding:.85rem 1rem;font-size:1.2rem;min-height:56px}
+#telaAcesso button{min-height:56px;padding:.9rem 1rem;margin-top:.6rem;font-size:1.15rem;font-weight:700}
+#telaAcesso .aceite-dados{font-size:.85rem;line-height:1.4;padding:.6rem;margin-top:.6rem}
+#telaAcesso .erro{font-size:.9rem;margin-top:.3rem}
+#telaAcesso .card-acesso{max-width:520px}
 
 
 /* Final responsive access-card override — logo must fit above the fold on small screens */
@@ -866,9 +867,9 @@ footer .termo{
   <!-- FALE COM O DESENVOLVEDOR -->
   <section class="reveal">
     <div class="bloco-dev">
-      <h3>💬 Fale com o desenvolvedor — Dúvidas sobre uso de IA?</h3>
-      <p>Camilo Dorna Marques Morais está disponível para tirar dúvidas sobre o uso de inteligência artificial em estudos, projetos e desenvolvimento pessoal, a partir de suas experiências com a plataforma. O contato não é para a realização de trabalhos acadêmicos nem para serviços de desenvolvimento, mas para compartilhar percepções e auxiliar colegas a decidirem, com autonomia, se vale a pena o investimento em uma assinatura da plataforma — dentro das leis brasileiras, sem criticar ou validar o serviço, apenas relatando sua vivência.</p>
-      <a class="btn-wpp" href="https://wa.me/5564996421083?text=Ol%C3%A1%20Camilo!%20Tenho%20uma%20d%C3%BAvida%20sobre%20o%20uso%20de%20IA" target="_blank" rel="noopener">💬 Fale com Camilo Dorna Marques Morais</a>
+      <h3>💬 Fale com o desenvolvedor — Adapta e ferramentas virtuais</h3>
+      <p>Camilo Dorna Marques Morais está disponível para apresentar a plataforma Adapta One / Maestro e falar sobre o desenvolvimento de ferramentas virtuais, tecnologias e projetos — a partir de sua experiência real. Toque no botão e a mensagem já vai pronta; é só enviar.</p>
+      <a class="btn-wpp" href="https://wa.me/5566996502683?text=Ol%C3%A1%20Camilo!%20Quero%20saber%20mais%20sobre%20a%20plataforma%20Adapta%20e%20sobre%20o%20desenvolvimento%20de%20ferramentas%20virtuais." target="_blank" rel="noopener">💬 Fale com Camilo Dorna Marques Morais</a>
     </div>
   </section>
 
@@ -876,8 +877,7 @@ footer .termo{
   <section class="reveal">
     <div class="adapta-box">
       Este material foi desenvolvido com apoio de IA da <strong>Adapta One / Maestro</strong>. Camilo participa do programa oficial de indicação da Adapta; caso uma indicação seja validada, poderão existir benefícios conforme as regras vigentes da empresa — não há promessa de prêmio nem de resultado.
-      <a href="https://go.adapta.org/campaign/ref-central?utm_content=2753ac66c7e27fcc" target="_blank" rel="noopener">Conheça a Adapta pelo link de indicação do Camilo</a> (compartilhamento orgânico; veja os termos oficiais).
-      <a href="https://app.adapta.one/referrals" target="_blank" rel="noopener" style="display:inline-block;margin-left:.5rem">Acessar Indique e Ganhe / ver meu link</a>. A contratação é decisão exclusiva sua; não há promessa de resultados. O responsável pelo desenvolvimento não é parte na relação entre o usuário e a plataforma — nos limites da legislação brasileira.
+      <a href="https://go.adapta.org/campaign/ref-central?utm_content=2753ac66c7e27fcc" target="_blank" rel="noopener">Conheça a Adapta pelo link de indicação do Camilo</a> — cadastre-se por este link para que a indicação seja validada e o Camilo receba os benefícios do programa (conforme os termos oficiais da plataforma). A contratação é decisão exclusiva sua; não há promessa de resultados. O responsável pelo desenvolvimento não é parte na relação entre o usuário e a plataforma — nos limites da legislação brasileira.
     </div>
   </section>
 
@@ -3298,7 +3298,7 @@ async function fbRequest(path,method,data){
     }
     if(table==='allAttendance'&&method==='GET'){r=await fetch(q+'rpc/get_60plus_public_summary',{method:'POST',headers,body:'{}'});if(!r.ok)throw new Error('attendance summary '+r.status);var sm=await r.json();return Number(sm.presencas||0);}
     if(table==='reservas'){
-      if(method==='GET'){r=await fetch(q+'rpc/get_60plus_public_transport_v2',{method:'POST',headers,body:'{}'});if(!r.ok)throw new Error('transport schedule '+r.status);rows=await r.json();out={};rows.forEach(function(x,i){var d=String(x.weekday||'').toLowerCase(),t=String(x.ride_time||'').slice(0,5),key=d+'|'+t;if(!out[key])out[key]={};var person=x.is_mine?uid:('other_'+i);out[key][person]={nome:x.display_name||'Participante',dia:d,horario:t};});return out;}
+      if(method==='GET'){r=await fetch(q+'rpc/get_60plus_public_transport_v2',{method:'POST',headers,body:'{}'});if(!r.ok)throw new Error('transport schedule '+r.status);rows=await r.json();out={};rows.forEach(function(x,i){var d=String(x.weekday||'').toLowerCase(),t=String(x.ride_time||'').slice(0,5),key=d+'|'+t;if(!out[key])out[key]={};var person=x.is_mine?uid:('outro_'+i+'_'+String(x.display_name||'p').slice(0,12));out[key][person]={nome:x.display_name||'Participante',dia:d,horario:t,is_mine:!!x.is_mine};});return out;}
       if(method==='PUT'){var d=String(parts[1]).toLowerCase(),time=parts[2];r=await fetch(q+'transport_reservations?on_conflict=user_id,weekday,ride_time',{method:'POST',headers:Object.assign({},headers,{Prefer:'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify({user_id:uid,weekday:d,ride_time:time+':00',display_name:String(usuario||'Participante').slice(0,40)})});if(!r.ok)throw new Error('reservation '+r.status);return {};}
       if(method==='DELETE'){var day=String(parts[1]).toLowerCase(),time=parts[2];r=await fetch(q+'transport_reservations?user_id=eq.'+encodeURIComponent(uid)+'&weekday=eq.'+encodeURIComponent(day)+'&ride_time=eq.'+encodeURIComponent(time+':00'),{method:'DELETE',headers});return r.ok?{}:null;}
     }
@@ -3364,7 +3364,7 @@ $('#inputNome').addEventListener('keydown', function(e){ if(e.key === 'Enter') e
 var metricas = store(':metricas') || { visitas: 0, tempoSeg: 0 };
 var minhaSessao = { inicio: Date.now(), contada: false, lastSent: 0 };
 
-function iniciarMetricas(){
+function iniciarMetricas(){if(window['_init_iniciarMetricas'])return;window['_init_iniciarMetricas']=true;
   if(!minhaSessao.contada){minhaSessao.contada=true;incrementRemoteVisit();}
   atualizarMetricasDOM();
   // tick local 30s: exibição cresce ao vivo
@@ -3382,10 +3382,10 @@ function salvarMetricas(){ store(':metricas', metricas); }
 function atualizarMetricasDOM(){var elapsed=Math.floor((Date.now()-minhaSessao.inicio)/1000);var v=$('#mVisitas'),t=$('#mTempo');if(v)v.textContent=Number((fbRootData.metricas||{}).visitas||0);if(t)t.textContent=fmtTempo(Number((fbRootData.metricas||{}).tempoSeg||0)+(minhaSessao.contada?elapsed:0));}
 
 /* ---------- métricas pessoais ---------- */
-function iniciarMetricasPessoais(){var pv=$('#mpVisitas'),pt=$('#mpTempo');if(pv)pv.textContent='Sincronizando…';if(pt)pt.textContent='Sincronizando…';}
+function iniciarMetricasPessoais(){if(window['_init_iniciarMetricasPessoais'])return;window['_init_iniciarMetricasPessoais']=true;var pv=$('#mpVisitas'),pt=$('#mpTempo');if(pv)pv.textContent='Sincronizando…';if(pt)pt.textContent='Sincronizando…';}
 
 /* ---------- lista compartilhada (consentimento) ---------- */
-function iniciarCompartilhamento(){
+function iniciarCompartilhamento(){if(window['_init_iniciarCompartilhamento'])return;window['_init_iniciarCompartilhamento']=true;
   var toggle=$('#toggleCompartilhar');
   fbRequest('compartilhados/'+participantKey(),'GET').then(function(v){toggle.checked=!!v;$('#listaCompartilhada').style.display='block';loadRemote();});
   toggle.addEventListener('change',function(){var intended=toggle.checked;toggle.disabled=true;if(intended){abrirModal('Compartilhar métricas neste aparelho','As métricas ficam salvas localmente neste dispositivo; ainda não serão compartilhadas online entre a turma. Deseja continuar?',async function(){await shareMetrics(true);toggle.disabled=false;toggle.checked=true;toast('Métricas compartilhadas.');});}else{abrirModal('Parar compartilhamento','Seu registro será removido da lista pública. Deseja continuar?',async function(){await shareMetrics(false);toggle.disabled=false;toggle.checked=false;toast('Compartilhamento desativado.');});}setTimeout(function(){if($('#modalFundo').classList.contains('ativo'))return;toggle.disabled=false;toggle.checked=!intended;},0);});
@@ -3440,7 +3440,7 @@ var reservas = store(':reservas') || {}; // { "seg|05:00": ["Nome", ...] }
 var HORARIOS = [];
 for(var h = 5; h <= 21; h++){ HORARIOS.push(String(h).padStart(2,'0')+':00'); if(h < 21) HORARIOS.push(String(h).padStart(2,'0')+':30'); }
 
-function iniciarTransporte(){
+function iniciarTransporte(){if(window['_init_iniciarTransporte'])return;window['_init_iniciarTransporte']=true;
   var grid = $('#horariosGrid');
   grid.innerHTML = HORARIOS.map(function(h){
     return '<button class="chip-hora" data-hora="'+h+'">'+h+'<span class="qtd"></span></button>';
@@ -3561,7 +3561,7 @@ function tocarAlarme(){
 
 /* ---------- frequência ---------- */
 var freqRemote={};
-function iniciarFrequencia(){
+function iniciarFrequencia(){if(window['_init_iniciarFrequencia'])return;window['_init_iniciarFrequencia']=true;
   freqRemote={};
   fbRequest('frequencia/'+participantKey(),'GET').then(function(v){freqRemote=v||{};renderFrequencyFromRemote(freqRemote);});
   $('#btnPresencaHoje').addEventListener('click',async function(){if(!dataConsent){toast('Entre autorizando dados para registrar presença.');return;}var k=hojeStr();if(freqRemote[k]){toast('Você já marcou presença hoje! 💪');return;}var rec=await fbRequest('frequencia/'+participantKey()+'/'+k,'PUT',{feito:true,ts:Date.now()});if(rec){freqRemote[k]={feito:true,ts:Date.now()};renderFrequencyFromRemote(freqRemote);var shared=await fbRequest('compartilhados/'+participantKey(),'GET');if(shared)await fbRequest('compartilhados/'+participantKey(),'PATCH',{presencas:Object.keys(freqRemote).length});await loadRemote();toast('Presença marcada e sincronizada! 💪');}else toast('Não foi possível salvar. Verifique sua conexão.');});
@@ -3569,7 +3569,7 @@ function iniciarFrequencia(){
 function renderFrequencyFromRemote(freq){var grid=$('#freqGrid');if(!grid)return;freq=freq||{};var hoje=new Date(),dias=[];for(var i=29;i>=0;i--){var d=new Date(hoje);d.setDate(d.getDate()-i);dias.push(d);}grid.innerHTML=dias.map(function(d){var k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');var mark=!!freq[k];return '<div class="freq-dia'+(mark?' marcado':'')+'" title="'+k+'">'+d.getDate()+'</div>';}).join('');var semana=0,mes=0,streak=0,melhor=0;for(var j=0;j<7;j++){var dd=new Date(hoje);dd.setDate(dd.getDate()-j);var kk=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');if(freq[kk])semana++;}Object.keys(freq).forEach(function(k){if(k.slice(0,7)===hoje.getFullYear()+'-'+String(hoje.getMonth()+1).padStart(2,'0'))mes++;});var cursor=new Date(hoje);while(true){var key=cursor.getFullYear()+'-'+String(cursor.getMonth()+1).padStart(2,'0')+'-'+String(cursor.getDate()).padStart(2,'0');if(freq[key]){streak++;cursor.setDate(cursor.getDate()-1);}else break;}$('#fsSemana').textContent=semana+'/7';$('#fsStreak').textContent=streak;$('#fsMelhor').textContent=Math.max(streak,Number((fbRootData.usuarios&&fbRootData.usuarios[participantKey()]&&fbRootData.usuarios[participantKey()].melhorStreak)||0));$('#fsMes').textContent=mes;}
 
 /* ---------- comentários ---------- */
-function iniciarComentarios(){
+function iniciarComentarios(){if(window['_init_iniciarComentarios'])return;window['_init_iniciarComentarios']=true;
   $('#btnEnviarComentario').addEventListener('click',async function(){if(!dataConsent){toast('Ative o consentimento e entre em modo compartilhado para publicar.');return;}var nome=usuario;var texto=$('#comTexto').value.trim();if(!texto){toast('Escreva seu comentário antes de enviar.');return;}if(texto.length>500){toast('Limite de 500 caracteres.');return;}var payload={nome:nome,userKey:participantKey(),texto:texto,data:new Date().toLocaleDateString('pt-BR'),ts:Date.now()};var cid=newId();var result=await fbRequest('comentarios/'+cid,'PUT',payload);if(result!==null){$('#comTexto').value='';await loadRemote();toast('Comentário salvo neste aparelho.');}else toast('Não foi possível salvar o comentário.');});
   loadRemote();
 }
@@ -3583,7 +3583,7 @@ function iniciarCompartilharPagina(){
   $('#btnWppCompartilhar').href = 'https://wa.me/5564996421083?text=' + encodeURIComponent('Olá, Camilo! Segue o link da Academia 60+: ' + url);
   $('#btnCopiarLink').addEventListener('click',async function(){try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(url);}else{var ta=document.createElement('textarea');ta.value=url;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();var ok=document.execCommand('copy');ta.remove();if(!ok)throw new Error('clipboard denied');}toast('Link copiado! 🔗');}catch(e){toast('Não foi possível copiar automaticamente. Toque e segure o link da barra do navegador.');}});
   var nativeBtn=$('#btnCompartilharNativo');if(nativeBtn)nativeBtn.addEventListener('click',async function(){var payload={title:'60+ Academia',text:'Organograma interativo — Onde a força não tem idade',url:url};try{if(navigator.share)await navigator.share(payload);else window.open('https://wa.me/5564996421083?text='+encodeURIComponent(payload.text+' '+url),'_blank','noopener');}catch(e){if(e.name!=='AbortError')toast('Compartilhamento cancelado ou indisponível.');}});
-  $('#btnImprimir').addEventListener('click',function(){window.print();});
+  $('#btnImprimir').addEventListener('click',function(){try{var bin=atob(PDF_B64),bytes=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);var blob=new Blob([bytes],{type:'application/pdf'}),url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='organograma-60mais.pdf';a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();},1500);toast('PDF do organograma baixado.');setTimeout(function(){URL.revokeObjectURL(url);},60000);}catch(e){window.print();}});
 }
 
 /* ---------- reveal on scroll ---------- */
