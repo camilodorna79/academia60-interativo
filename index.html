@@ -38,7 +38,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 input{font-family:inherit}
 
 /* ============ TELA DE ACESSO ============ */
-#telaAcesso{position:fixed;inset:0;z-index:1000;background:linear-gradient(160deg,#fff7ed 0%,#ffedd5 45%,#fed7aa 100%);display:flex;align-items:center;justify-content:center;padding:max(.5rem,env(safe-area-inset-top)) 1rem max(.5rem,env(safe-area-inset-bottom));overflow-y:auto}
+#telaAcesso{position:fixed;inset:0;z-index:1000;background:linear-gradient(160deg,#fff7ed 0%,#ffedd5 45%,#fed7aa 100%);display:flex;align-items:center;justify-content:center;padding:max(.5rem,env(safe-area-inset-top)) 1rem max(.5rem,env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain}
+#telaAcesso .card-acesso{max-height:calc(100dvh - 1rem);overflow-y:auto;overscroll-behavior:contain}
+@media (min-width:701px) and (min-height:700px){
+  #telaAcesso .card-acesso{max-width:520px}
+  #telaAcesso .logo-acesso{width:min(220px,40vw)!important}
+  #telaAcesso .logo-acesso .logo-original{width:min(220px,40vw)!important}
+}
 #telaAcesso .card-acesso{background:var(--card);border-radius:22px;box-shadow:0 20px 60px rgba(249,115,22,.25);padding:clamp(.6rem,1.5vh,1rem) clamp(.8rem,4vw,1.5rem);text-align:center;max-width:420px;width:100%;max-height:calc(100dvh - 1rem);overflow-y:auto}
 
 
@@ -507,7 +513,10 @@ footer .termo{
 #telaAcesso{align-items:center;padding:5px 9px env(safe-area-inset-bottom);overflow-y:auto}
 #telaAcesso .card-acesso{width:min(100%,410px);max-height:calc(100dvh - 10px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow-y:auto;padding:clamp(5px,1vh,10px) clamp(10px,3vw,16px);border-radius:15px}
 #telaAcesso .logo-acesso{width:100%;margin:0 auto 2px;max-height:none;overflow:visible}
-#telaAcesso .logo-acesso .logo-original{display:block!important;width:min(560px,88vw)!important;height:auto!important;max-height:none!important;object-fit:contain!important;margin:0 auto!important}
+#telaAcesso .logo-acesso .logo-original{display:block!important;width:min(280px,60vw)!important;height:auto!important;max-height:none!important;object-fit:contain!important;margin:0 auto!important}
+@media (max-width:700px){
+  #telaAcesso .logo-acesso .logo-original{width:min(560px,88vw)!important}
+}
 #telaAcesso h1{font-size:clamp(.96rem,3.6vw,1.24rem);line-height:1.15;margin:.08rem 0 .12rem}
 #telaAcesso p{font-size:.76rem;line-height:1.18;margin:0 0 .28rem}
 #telaAcesso #inputNome{min-height:38px;padding:.45rem .6rem;font-size:.9rem}
@@ -517,8 +526,12 @@ footer .termo{
 
 /* ===== Ampliação tela de acesso (v3 — pedido Camilo) ===== */
 #telaAcesso .card-acesso{max-width:560px;padding:1.6rem 1.4rem}
-#telaAcesso .logo-acesso{width:min(560px,88vw)!important;max-height:none!important}
+#telaAcesso .logo-acesso{width:min(280px,60vw)!important;max-height:none!important}
 #telaAcesso .logo-acesso img{width:100%!important;height:auto!important;max-height:none!important}
+@media (max-width:700px){
+  #telaAcesso .logo-acesso{width:min(560px,88vw)!important}
+  #telaAcesso .logo-acesso img{width:100%!important;height:auto!important;max-height:none!important}
+}
 #telaAcesso h1{font-size:clamp(1.7rem,6.5vw,2.3rem)!important;line-height:1.15!important}
 #telaAcesso p{font-size:1.08rem!important;line-height:1.45!important}
 #telaAcesso #inputNome{font-size:1.2rem!important;padding:.85rem 1rem!important;min-height:58px!important}
@@ -539,7 +552,8 @@ footer .termo{
     <div class="erro" id="erroNome">Digite seu nome ou apelido para entrar</div>
     <label class="aceite-dados"><input type="checkbox" id="aceiteDados"> Autorizo salvar meu nome/apelido, frequência, reservas e comentários neste aparelho. Seus dados ficam salvos com segurança e sincronizam entre os aparelhos da turma.</label>
     <button id="btnContinuar" style="display:none;background:#16a34a;color:#fff;font-weight:700"></button>
-    <button id="btnEntrar">Entrar e salvar localmente</button><button id="btnEntrarSemDados" type="button" style="width:100%;margin-top:.55rem;padding:.85rem;border:1px solid var(--borda);border-radius:10px;color:var(--grafite);font-weight:700;min-height:48px">Entrar sem enviar dados pessoais</button>
+    <button id="btnEntrar">Entrar e salvar localmente</button><button id="btnEntrarVisitante" type="button" style="width:100%;margin-top:.5rem;background:#f4f4f5;color:#3f3f46;font-weight:600">👤 Entrar como Visitante</button>
+    <button id="btnEntrarSemDados" type="button" style="width:100%;margin-top:.55rem;padding:.85rem;border:1px solid var(--borda);border-radius:10px;color:var(--grafite);font-weight:700;min-height:48px">Entrar sem enviar dados pessoais</button>
   </div>
 </div>
 
@@ -817,6 +831,7 @@ footer .termo{
         <div><strong style="font-size:.98rem">Compartilhar minhas métricas neste aparelho</strong><br><span style="font-size:.85rem;color:var(--cinza)">O compartilhamento fica apenas neste aparelho até a sincronização segura online ser configurada.</span></div>
         <label class="switch"><input type="checkbox" id="toggleCompartilhar"><span class="slider"></span></label>
       </div>
+      <button id="btnApagarMeusDados" type="button" style="width:100%;margin-top:.8rem;background:#fee2e2;color:#b91c1c;font-weight:700;border:1px solid #fecaca;border-radius:10px;padding:.7rem">🗑️ Apagar todos os meus dados do sistema</button>
       <div id="listaCompartilhada" style="margin-top:.9rem;display:none">
         <h4 style="font-size:.95rem;margin-bottom:.5rem">👥 Lista de Frequência Compartilhada</h4>
         <div id="corpoListaCompartilhada" style="font-size:.9rem;color:var(--cinza)">Nenhum colega compartilhou ainda.</div>
@@ -3266,7 +3281,19 @@ var USE_SECURE_BACKEND=false;
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
 var USE_SECURE_BACKEND=false;
 var secureUser=null,fbOnline=false,fbRootData={},localData=store(':privateLocalData')||{metricas:{visitas:0,tempoSeg:0},usuarios:{},compartilhados:{},comentarios:{},reservas:{},frequencia:{}};
-async function ensureSupabaseSession(){if(!SUPABASE_AUTH_PROVIDER_ENABLED)return false;var cur=await supabaseClient.auth.getSession();var session=cur.data&&cur.data.session;if(!session){var auth=await supabaseClient.auth.signInAnonymously();if(auth.error||!auth.data||!auth.data.session)return false;session=auth.data.session;}secureUser=session.user||null;return !!(secureUser&&session.access_token);}
+async function ensureSupabaseSession(){if(!SUPABASE_AUTH_PROVIDER_ENABLED)return false;
+  var saved=null;try{saved=JSON.parse(store(':sbsession')||'null');}catch(e){}
+  if(saved&&saved.refresh_token){
+    try{var rs=await supabaseClient.auth.setSession(saved);if(rs.data&&rs.data.session){secureUser=rs.data.session.user||null;if(secureUser){store(':sbsession',JSON.stringify({access_token:rs.data.session.access_token,refresh_token:rs.data.session.refresh_token}));return !!secureUser;}}}catch(e){}
+  }
+  var cur=await supabaseClient.auth.getSession();var session=cur.data&&cur.data.session;
+  if(!session&&saved&&saved.access_token){
+    try{supabaseClient.auth.recoverSession(saved);session=saved;}catch(e){}
+  }
+  if(!session){var auth=await supabaseClient.auth.signInAnonymously();if(auth.error||!auth.data||!auth.data.session)return false;session=auth.data.session;}
+  secureUser=session.user||null;
+  if(secureUser)store(':sbsession',JSON.stringify({access_token:session.access_token,refresh_token:session.refresh_token}));
+  return !!(secureUser&&session.access_token);}
 
 function userKey(name){return String(name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9_-]/g,'_').slice(0,50)||'visitante'}
 function newId(){if(window.crypto&&crypto.randomUUID)return crypto.randomUUID();return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16);});}
@@ -3305,7 +3332,7 @@ async function fbRequest(path,method,data){
     if(table==='comentarios'){
       if(method==='GET'){r=await fetch(q+'public_comments?select=*&order=created_at.desc&limit=200',{headers});if(!r.ok)throw new Error('comments '+r.status);return await r.json();}
       if(method==='PUT'){r=await fetch(q+'public_comments',{method:'POST',headers,body:JSON.stringify({id:parts[1],user_id:uid,display_name:String(usuario||'Participante').slice(0,40),body:String(data.texto||'').slice(0,500)})});if(!r.ok)throw new Error('comment write '+r.status);return {id:parts[1],userKey:uid};}
-      if(method==='DELETE'){r=await fetch(q+'public_comments?id=eq.'+encodeURIComponent(parts[1])+'&user_id=eq.'+encodeURIComponent(uid),{method:'DELETE',headers});return r.ok?{}:null;}
+      if(method==='DELETE'){r=await fetch(q+'public_comments?id=eq.'+encodeURIComponent(parts[1])+'&user_id=eq.'+encodeURIComponent(uid),{method:'DELETE',headers});if(r.ok)return {};r=await fetch(q+'rpc/delete_60plus_comment_by_name',{method:'POST',headers,body:JSON.stringify({p_id:parts[1],p_name:String(usuario||'')})});return r.ok?{}:null;}
     }
     if(table==='frequencia'){
       if(method==='GET'){r=await fetch(q+'attendance?user_id=eq.'+encodeURIComponent(uid)+'&select=attended_on',{headers});if(!r.ok)throw new Error('attendance '+r.status);rows=await r.json();out={};rows.forEach(function(x){out[x.attended_on]={feito:true};});return out;}
@@ -3313,6 +3340,12 @@ async function fbRequest(path,method,data){
       if(method==='DELETE'){r=await fetch(q+'attendance?user_id=eq.'+encodeURIComponent(uid)+'&attended_on=eq.'+encodeURIComponent(parts[2]),{method:'DELETE',headers});return r.ok?{}:null;}
     }
     if(table==='allAttendance'&&method==='GET'){r=await fetch(q+'rpc/get_60plus_public_summary',{method:'POST',headers,body:'{}'});if(!r.ok)throw new Error('attendance summary '+r.status);var sm=await r.json();return Number(sm.presencas||0);}
+    if(table==='meusdados'){
+      if(method==='DELETE'){r=await fetch(q+'rpc/delete_60plus_my_data',{method:'POST',headers,body:JSON.stringify({p_name:String(usuario||'')})});return r.ok?{}:null;}
+    }
+    if(table==='reservasNome'){
+      if(method==='DELETE'){r=await fetch(q+'rpc/delete_60plus_reservation_by_name',{method:'POST',headers,body:JSON.stringify({p_weekday:parts[1],p_ride_time:decodeURIComponent(parts[2])+':00',p_name:decodeURIComponent(parts[3])})});return r.ok?{}:null;}
+    }
     if(table==='reservas'){
       if(method==='GET'){r=await fetch(q+'rpc/get_60plus_public_transport_v2',{method:'POST',headers,body:'{}'});if(!r.ok)throw new Error('transport schedule '+r.status);rows=await r.json();out={};rows.forEach(function(x,i){var d=String(x.weekday||'').toLowerCase(),t=String(x.ride_time||'').slice(0,5),key=d+'|'+t;if(!out[key])out[key]={};var person=x.is_mine?uid:('outro_'+i+'_'+String(x.display_name||'p').slice(0,12));out[key][person]={nome:x.display_name||'Participante',dia:d,horario:t,is_mine:!!x.is_mine};});return out;}
       if(method==='PUT'){var d=String(parts[1]).toLowerCase(),time=parts[2];r=await fetch(q+'transport_reservations?on_conflict=user_id,weekday,ride_time',{method:'POST',headers:Object.assign({},headers,{Prefer:'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify({user_id:uid,weekday:d,ride_time:time+':00',display_name:String(usuario||'Participante').slice(0,40)})});if(!r.ok)throw new Error('reservation '+r.status);return {};}
@@ -3330,8 +3363,8 @@ async function loadRemote(){var uid=participantKey();var results=await Promise.a
 async function renderRemoteSummary(){
   var root=fbRootData||{};var metric=root.metricas||{};var v=$('#mVisitas'),t=$('#mTempo');if(v)v.textContent=Number(metric.visitas||0);if(t)t.textContent=fmtTempo(Number(metric.tempoSeg||0));var gv=$('#generalVisits'),gt=$('#generalTime'),gb=$('#generalBookings'),gc=$('#generalComments'),gf=$('#generalAttendance');if(gf)gf.textContent=(typeof root.allFrequencyCount==='number'?root.allFrequencyCount:Object.keys(root.allFrequency||{}).reduce(function(total,uid){return total+Object.keys(root.allFrequency[uid]||{}).length},0));if(gv)gv.textContent=Number(metric.visitas||0);if(gt)gt.textContent=fmtTempo(Number(metric.tempoSeg||0));if(gb)gb.textContent=Object.keys(root.reservas||{}).reduce(function(sum,k){return sum+Object.keys(root.reservas[k]||{}).length},0);if(gc)gc.textContent=Object.keys(root.comentarios||{}).length;
   var c=root.compartilhados||{}; var list=$('#corpoListaCompartilhada');
-  if(list){var keys=Object.keys(c);list.innerHTML=keys.length?keys.map(function(k){var x=c[k];return '<div class="toggle-linha"><div><strong>'+escapeHtml(x.nome||'Estudante')+'</strong><br><span style="font-size:.85rem;color:var(--cinza)">'+Number(x.visitas||0)+' visitas · '+fmtTempo(Number(x.tempoSeg||0))+' de interações</span></div></div>'}).join(''):'Nenhum colega autorizou compartilhar métricas.';}
-  var comments=root.comentarios||{},box=$('#listaComentarios');if(box){var arr=Object.keys(comments).map(function(k){return Object.assign({key:k},comments[k])}).sort(function(a,b){return (b.ts||0)-(a.ts||0)});box.classList.toggle('comments-scroll',arr.length>6);box.setAttribute('aria-label',arr.length>6?'Comentários da turma; lista rolável':'Comentários da turma');box.innerHTML=arr.length?arr.map(function(c){var own=c.userKey===participantKey();return '<div class="comentario-item"><span class="autor">'+escapeHtml(c.nome||'Estudante')+'</span> <span class="data">· '+escapeHtml(c.data||'')+'</span>'+(own?'<button class="btn-excluir-com" data-key="'+c.id+'">🗑️ Apagar</button>':'')+'<div class="texto">'+escapeHtml(c.texto||'')+'</div></div>'}).join(''):'<p style="text-align:center;color:var(--cinza);font-size:.92rem">Nenhum comentário ainda — seja a primeira pessoa a deixar sua opinião!</p>';box.classList.toggle('comentarios-rolaveis',arr.length>6);box.tabIndex=arr.length>6?0:-1;box.setAttribute('role','region');box.setAttribute('aria-label',arr.length>6?'Comentários da turma; área rolável com todos os comentários':'Comentários da turma');box.querySelectorAll('.btn-excluir-com').forEach(function(b){b.addEventListener('click',function(){var key=b.dataset.key;abrirModal('Apagar comentário','Apagar seu comentário? Esta ação não pode ser desfeita.',async function(){await fbRequest('comentarios/'+key,'DELETE');await loadRemote();toast('Comentário apagado.');});});});}
+  if(list){var keys=Object.keys(c);var linhaVis='';var totalVis=Number((root.metricas&&root.metricas.visitas)||0);if(totalVis>0)linhaVis='<div class="toggle-linha"><div><strong>👤 Visitantes da página</strong><br><span style="font-size:.85rem;color:var(--cinza)">'+totalVis+' visitas registradas no total</span></div></div>';list.innerHTML=(linhaVis+(keys.length?keys.map(function(k){var x=c[k];var nm=String(x.nome||'').trim();if(!nm||/^estudante$/i.test(nm))nm='Visitante';return '<div class="toggle-linha"><div><strong>'+escapeHtml(nm)+'</strong><br><span style="font-size:.85rem;color:var(--cinza)">'+Number(x.visitas||0)+' visitas · '+fmtTempo(Number(x.tempoSeg||0))+' de interações</span></div></div>'}).join(''):'<p style="font-size:.85rem;color:var(--cinza)">Nenhum colega autorizou compartilhar métricas ainda — você pode ativar acima.</p>'));}
+  var comments=root.comentarios||{},box=$('#listaComentarios');if(box){var arr=Object.keys(comments).map(function(k){return Object.assign({key:k},comments[k])}).sort(function(a,b){return (b.ts||0)-(a.ts||0)});box.classList.toggle('comments-scroll',arr.length>6);box.setAttribute('aria-label',arr.length>6?'Comentários da turma; lista rolável':'Comentários da turma');box.innerHTML=arr.length?arr.map(function(c){var own=(c.userKey===participantKey())||(String(c.nome||'').toLowerCase()===String(usuario||'').toLowerCase());var cn=String(c.nome||'').trim();if(!cn||/^estudante$/i.test(cn))cn='Visitante';return '<div class="comentario-item"><span class="autor">'+escapeHtml(cn)+'</span> <span class="data">· '+escapeHtml(c.data||'')+'</span>'+(own?'<button class="btn-excluir-com" data-key="'+c.id+'">🗑️ Apagar</button>':'')+'<div class="texto">'+escapeHtml(c.texto||'')+'</div></div>'}).join(''):'<p style="text-align:center;color:var(--cinza);font-size:.92rem">Nenhum comentário ainda — seja a primeira pessoa a deixar sua opinião!</p>';box.classList.toggle('comentarios-rolaveis',arr.length>6);box.tabIndex=arr.length>6?0:-1;box.setAttribute('role','region');box.setAttribute('aria-label',arr.length>6?'Comentários da turma; área rolável com todos os comentários':'Comentários da turma');box.querySelectorAll('.btn-excluir-com').forEach(function(b){b.addEventListener('click',function(){var key=b.dataset.key;abrirModal('Apagar comentário','Apagar seu comentário? Esta ação não pode ser desfeita.',async function(){await fbRequest('comentarios/'+key,'DELETE');await loadRemote();toast('Comentário apagado.');});});});}
   var reservations=root.reservas||{};reservas=reservations;renderConfirmados();
   var f=root.frequencia||{};renderFrequencyFromRemote(f);
   var personal=(root.usuarios&&root.usuarios[participantKey()])||{};var pv=$('#mpVisitas'),pt=$('#mpTempo'),pf=$('#mpPresencas');if(pv)pv.textContent=Number(personal.visitas||0)+' visitas suas';if(pt)pt.textContent=fmtTempo(Number(personal.tempoSeg||0))+' seus';var mine=(root.frequencia&&root.frequencia[participantKey()])||{};if(pf)pf.textContent=Object.keys(mine).length+' presenças registradas';
@@ -3374,6 +3407,7 @@ async function entrar(){
 }
 $('#btnEntrar').addEventListener('click', entrar);
 $('#btnEntrarSemDados').addEventListener('click',function(){var nome=$('#inputNome').value.trim();if(!nome){$('#erroNome').style.display='block';return;}dataConsent=false;usuario=nome;store(':usuario',null);store(':consentimento',false);$('#telaAcesso').style.display='none';$('#nomeUsuario').textContent=nome;$('#comNome').value=nome;iniciarPosLogin();toast('Modo leitura: nenhum dado pessoal será enviado.');});
+$('#btnEntrarVisitante').addEventListener('click',function(){dataConsent=true;usuario='Visitante';store(':usuario','Visitante');store(':consentimento',true);$('#telaAcesso').style.display='none';$('#nomeUsuario').textContent='Visitante';$('#comNome').value='Visitante';iniciarPosLogin();toast('Você está navegando como Visitante. 👋');});
 $('#inputNome').addEventListener('keydown', function(e){ if(e.key === 'Enter') entrar(); });
 
 /* ---------- métricas globais (visitas + tempo de interações) ---------- */
@@ -3402,6 +3436,15 @@ function iniciarMetricasPessoais(){if(window['_init_iniciarMetricasPessoais'])re
 
 /* ---------- lista compartilhada (consentimento) ---------- */
 function iniciarCompartilhamento(){if(window['_init_iniciarCompartilhamento'])return;window['_init_iniciarCompartilhamento']=true;
+  var bAp=document.getElementById('btnApagarMeusDados');
+  if(bAp)bAp.addEventListener('click',function(){
+    abrirModal('Apagar meus dados','Apagar TODOS os seus dados do sistema (presenças, reservas, comentários e métricas)? Esta ação não pode ser desfeita.',async function(){
+      try{await fbRequest('meusdados','DELETE');}catch(e){}
+      try{localStorage.removeItem(':privateLocalData');localStorage.removeItem(':reservas');localStorage.removeItem(':usuario');localStorage.removeItem(':consentimento');}catch(e){}
+      toast('Seus dados foram apagados do sistema. 🗑️');
+      setTimeout(function(){location.reload();},1200);
+    });
+  });
   var toggle=$('#toggleCompartilhar');
   fbRequest('compartilhados/'+participantKey(),'GET').then(function(v){toggle.checked=!!v;$('#listaCompartilhada').style.display='block';loadRemote();});
   toggle.addEventListener('change',function(){var intended=toggle.checked;toggle.disabled=true;if(intended){abrirModal('Compartilhar métricas neste aparelho','Suas métricas (visitas, tempo e presenças) aparecerão na lista da turma, em todos os aparelhos. Deseja continuar?',async function(){await shareMetrics(true);toggle.disabled=false;toggle.checked=true;toast('Métricas compartilhadas.');});}else{abrirModal('Parar compartilhamento','Seu registro será removido da lista pública. Deseja continuar?',async function(){await shareMetrics(false);toggle.disabled=false;toggle.checked=false;toast('Compartilhamento desativado.');});}setTimeout(function(){if($('#modalFundo').classList.contains('ativo'))return;toggle.disabled=false;toggle.checked=!intended;},0);});
@@ -3440,11 +3483,12 @@ function iniciarOrganograma(){
   });
   document.addEventListener('fullscreenchange',function(){var b=$('#btnFullscreen');if(b)b.textContent=document.fullscreenElement?'⛶ Organograma em tela inteira':'⛶ Tela inteira';});
   // zoom
-  var zoom = 1;
-  function aplicarZoom(){org.style.setProperty('--zoom',zoom);var tree=org.querySelector('.org-tree');if(tree){tree.style.transform='scale('+zoom+')';tree.style.transformOrigin='top center';tree.style.width=(100/zoom)+'%';tree.style.marginBottom=(Math.max(0,tree.scrollHeight*(zoom-1)))+'px';}}
+  var zoom = Number(store(':orgZoom')) || 1;
+  function aplicarZoom(){org.style.setProperty('--zoom',zoom);var tree=org.querySelector('.org-tree');if(tree){tree.style.transform='scale('+zoom+')';tree.style.transformOrigin='top center';tree.style.width=(100/zoom)+'%';tree.style.marginBottom=(Math.max(0,tree.scrollHeight*(zoom-1)))+'px';}store(':orgZoom',zoom);}
   $('#btnZoomMais').addEventListener('click', function(){ zoom = Math.min(2, zoom + 0.15); aplicarZoom(); });
   $('#btnZoomMenos').addEventListener('click', function(){ zoom = Math.max(0.5, zoom - 0.15); aplicarZoom(); });
   $('#btnZoomReset').addEventListener('click', function(){ zoom = 1; aplicarZoom(); });
+  setTimeout(aplicarZoom, 50);
   // PDF via impressão otimizada
   $('#btnBaixarPDF').addEventListener('click',function(){try{var bin=atob(PDF_B64),bytes=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);var blob=new Blob([bytes],{type:'application/pdf'}),url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='organograma-60mais.pdf';a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();},1500);toast('Organograma em PDF baixado. Se não abrir, toque na notificação de download do navegador.');setTimeout(function(){URL.revokeObjectURL(url);},60000);}catch(e){toast('Não foi possível baixar o PDF; use Imprimir / Salvar em PDF.');console.error(e);}});
 
@@ -3531,7 +3575,7 @@ function renderConfirmados(){
   box.style.display = 'block';
   corpo.innerHTML = chaves.sort().map(function(k){
     var partes = k.split('|');
-    var entries=Object.keys(reservas[k]||{}).map(function(id){return reservas[k][id]});var nomes=entries.map(function(x){return escapeHtml(x.nome||'Participante')}).join(', ');
+    var entries=Object.keys(reservas[k]||{}).map(function(id){return reservas[k][id]});var nomes=entries.map(function(x){var n=String(x.nome||'').trim();if(!n||/^participante$/i.test(n))n='Visitante';return escapeHtml(n)}).join(', ');
     var meu=!!(reservas[k]&&reservas[k][participantKey()]);
     return '<div class="item-confirmado"><span><strong>'+partes[1]+'</strong> · '+partes[0]+': '+nomes+'</span>'+(meu?'<button class="btn-excluir-reserva" data-chave="'+k+'">Cancelar</button>':'')+'</div>';
   }).join('');
@@ -3654,6 +3698,19 @@ function iniciarPosLogin(){
  }
 
 
+/* ---------- restaurar posição de leitura ---------- */
+(function(){
+  var salvando=null;
+  window.addEventListener('scroll',function(){
+    if(salvando)clearTimeout(salvando);
+    salvando=setTimeout(function(){try{store(':scrollPos',Math.round(window.scrollY));}catch(e){}},400);
+  },{passive:true});
+  window.addEventListener('beforeunload',function(){try{store(':scrollPos',Math.round(window.scrollY));}catch(e){}});
+  window.addEventListener('load',function(){
+    var y=Number(store(':scrollPos'))||0;
+    if(y>120){setTimeout(function(){try{window.scrollTo({top:y,behavior:'instant'});}catch(e){window.scrollTo(0,y);}},600);}
+  });
+})();
 /* ---------- boot ---------- */
 (function boot(){
   var prev=store(':usuario');var consent=store(':consentimento');
