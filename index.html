@@ -3394,7 +3394,7 @@ function fmtTempo(seg){
 /* ---------- modal ---------- */
 var modalCb=null;
 function fecharModal(){var f=$('#modalFundo');f.classList.remove('ativo');f.setAttribute('aria-hidden','true');modalCb=null;}
-function abrirModal(titulo,texto,cb){$('#modalTitulo').textContent=titulo;$('#modalTexto').textContent=texto;modalCb=cb;var f=$('#modalFundo');f.classList.add('ativo');f.setAttribute('aria-hidden','false');}
+function abrirModal(titulo,texto,cb,comInput){$('#modalTitulo').textContent=titulo;$('#modalTexto').textContent=texto;var mi=$('#modalInput');if(mi){if(comInput){mi.style.display='block';mi.value='';setTimeout(function(){mi.focus();},80);}else{mi.style.display='none';}}modalCb=cb;var f=$('#modalFundo');f.classList.add('ativo');f.setAttribute('aria-hidden','false');}
 $('#modalCancelar').addEventListener('click',function(){fecharModal();});
 $('#modalOk').addEventListener('click',function(){var cb=modalCb;fecharModal();if(cb)cb();});
 $('#modalFundo').addEventListener('click',function(e){if(e.target===$('#modalFundo'))fecharModal();});
